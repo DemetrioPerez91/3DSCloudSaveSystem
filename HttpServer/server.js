@@ -22,12 +22,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// app.post('/gbaSaveFiles', upload.single('file'), (req, res) => {
-//   console.log("FILE UPLOAD ENDPOINT CALLED")
-//   res.send('File uploaded');
-// });
-
-
 
 app.post('/gbaSaveFiles', (req, res) => {
   console.log("FILE UPLOAD ENDPOINT CALLED");
@@ -45,28 +39,6 @@ app.post('/gbaSaveFiles', (req, res) => {
 
   res.send('File uploaded');
 });
-
-// app.post('/gbaSaveFiles', upload.single('file'), (req, res) => {
-//   console.log("FILE UPLOAD ENDPOINT CALLED");
-
-//   if (!req.file) {
-//     console.error("No file received!");
-//     return res.status(400).send("No file received");
-//   }
-
-//   console.log("Received file:");
-//   console.log("  originalname:", req.file.originalname);
-//   console.log("  mimetype:", req.file.mimetype);
-//   console.log("  size:", req.file.size);
-//   console.log("  buffer:", req.file.buffer.toString());
-
-//   // Optionally save the file to disk:
-//   const fs = require('fs');
-//   fs.writeFileSync(`./uploads/${req.file.originalname || 'upload.bin'}`, req.file.buffer);
-
-//   res.send('File uploaded successfully');
-// });
-
 
 // List all files with timestamps, human-readable dates, and file size
 app.get('/gbaSaveFiles', (req, res) => {
@@ -92,16 +64,6 @@ app.get('/gbaSaveFiles', (req, res) => {
   });
 });
 
-// Download specific file
-// app.get('/gbaSaveFiles/:filename', (req, res) => {
-//   console.log("Request for file:", filename);
-//   const filePath = path.join(uploadDir, req.params.filename);
-//   if (fs.existsSync(filePath)) {
-//     res.download(filePath);
-//   } else {
-//     res.status(404).send('File not found');
-//   }
-// });
 app.get('/gbaSaveFiles/:filename', (req, res) => {
   const filename = req.params.filename;
   // console.log("Request for file:", filename);

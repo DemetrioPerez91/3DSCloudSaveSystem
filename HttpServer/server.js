@@ -12,7 +12,6 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => cb(null, file.originalname)
 });
 const upload = multer({ storage });
-
 const app = express();
 
 app.use(express.raw({ type: 'application/octet-stream', limit: '10mb' }));
@@ -23,22 +22,12 @@ app.use((req, res, next) => {
 });
 
 
-app.post('/gbaSaveFiles', (req, res) => {
-  console.log("FILE UPLOAD ENDPOINT CALLED");
-
-  if (!req.body || !(req.body instanceof Buffer)) {
-    console.log("No raw body buffer received!");
-    return res.status(400).send("Expected raw binary data");
-  }
-
-  console.log("Received file data length:", req.body.length);
-  console.log(req.body.slice(0, 32).toString('hex'));  // print first 32 bytes in hex for sanity
-
-  // Optionally save received data to verify it arrived correctly
-  fs.writeFileSync('uploaded_file.bin', req.body);
-
-  res.send('File uploaded');
+// Upload files to gbaSaveFiles folder
+app.post('/gbaSaveFiles', upload.single('file'), (req, res) => {
+  console.log("FILE UPLOAD ENDPOINT CALLED")
+  res.send('File uploaded\n');
 });
+
 
 // List all files with timestamps, human-readable dates, and file size
 app.get('/gbaSaveFiles', (req, res) => {
@@ -64,10 +53,9 @@ app.get('/gbaSaveFiles', (req, res) => {
   });
 });
 
+// Download a file in the gbaSaveFiles folder
 app.get('/gbaSaveFiles/:filename', (req, res) => {
   const filename = req.params.filename;
-  // console.log("Request for file:", filename);
-
   const filePath = path.join(uploadDir, filename);
   if (fs.existsSync(filePath)) {
     res.download(filePath);
@@ -80,6 +68,5 @@ app.get('/gbaSaveFiles/:filename', (req, res) => {
 app.listen(3000, () => {
   console.log(`Upload server listening on http://${hostname}:3000`);
   console.log(`Upload server path is ${uploadDir}`);
-  // console.log(`MUNYAH!!!`);
 });
 

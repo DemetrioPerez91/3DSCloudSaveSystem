@@ -5,7 +5,8 @@
 
 namespace fs = std::filesystem;
 
-const std::string SERVER_URL = "http://10.0.0.106:3000/gbaSaveFiles";
+const std::string SERVER_PRO_URL = "http://10.0.0.106:3000/gbaSaveFiles";
+const std::string SERVER_STG_URL = "http://10.0.0.106:3000/gbaSaveFiles";
 
 void uploadFile(const fs::path& filePath) {
     CURL* curl;

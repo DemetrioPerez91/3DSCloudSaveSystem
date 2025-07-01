@@ -7,8 +7,6 @@
 #include "savefile.h"
 #include "network.h"
 #include "parser.h"
-// #define R_DESCRIPTION(x) ((x) & 0x3FF)
-
 
 /// Shared HTTP download logic
 static Result http_download_to_buffer(const char *url, u8 **outBuf, u32 *outSize) {
@@ -331,9 +329,6 @@ Result http_upload_file_simple(const char *url, const char *filepath) {
     httpcAddRequestHeaderField(&context, "User-Agent", "3ds-uploader/1.0");
     httpcAddRequestHeaderField(&context, "Connection", "Keep-Alive");
     httpcAddRequestHeaderField(&context, "Content-Type", "application/octet-stream");
-
-    // Add multipart/form-data boundary header
-    // httpcAddRequestHeaderField(&context, "Content-Type", "multipart/form-data");
 
     // Here's the actual binary file POST (field name is "file")
     ret = httpcAddPostDataBinary(&context, "file", fileData, fileSize);

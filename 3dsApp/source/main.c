@@ -7,7 +7,6 @@
 #include "includes/network.h"
 #include <3ds.h>
 
-
 void downloadAvailableFilesList() 
 {
 	// Initialize HTTP
@@ -15,7 +14,7 @@ void downloadAvailableFilesList()
 
 	// Make json download endpoint
 	char saveFIlesEndPoint[256];
-	snprintf(saveFIlesEndPoint, sizeof(saveFIlesEndPoint), "%s%s", SERVER_BASE_URL, SAVEFILES_ENDPOINT);
+	snprintf(saveFIlesEndPoint, sizeof(saveFIlesEndPoint), "%s%s", SERVER_STG_URL, SAVEFILES_ENDPOINT);
 
 	Result ret = http_download_json(saveFIlesEndPoint);
 	if (ret != 0 ){
@@ -59,7 +58,7 @@ void downloadFileByName(const char *saveFilename)
 	urlEncode(saveFilename, encoded, sizeof(encoded));
 
 	char saveFilesEndPoint[512];
-	snprintf(saveFilesEndPoint, sizeof(saveFilesEndPoint), "%s%s/%s", SERVER_BASE_URL, SAVEFILES_ENDPOINT, encoded);
+	snprintf(saveFilesEndPoint, sizeof(saveFilesEndPoint), "%s%s/%s", SERVER_STG_URL, SAVEFILES_ENDPOINT, encoded);
 
 	printf("FILE URL: %s\n", saveFilesEndPoint);
 	Result ret = http_download(saveFilesEndPoint, saveFilename);
@@ -90,7 +89,7 @@ void uploadFileByName(const char *saveFilename)
 	snprintf(filePath, sizeof(filePath), "%s/%s", SAVE_FOLDER, saveFilename);
 
 	char saveFilesEndPoint[512];
-	snprintf(saveFilesEndPoint, sizeof(saveFilesEndPoint), "%s%s", SERVER_BASE_URL, SAVEFILES_ENDPOINT);
+	snprintf(saveFilesEndPoint, sizeof(saveFilesEndPoint), "%s%s", SERVER_STG_URL, SAVEFILES_ENDPOINT);
 
 
 	printf("FILE LOCATION: %s\n", filePath);
@@ -135,4 +134,3 @@ int main()
 	gfxExit();
 	return 0;
 }
-

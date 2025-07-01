@@ -6,7 +6,7 @@
 namespace fs = std::filesystem;
 
 const std::string SERVER_PRO_URL = "http://10.0.0.106:3000/gbaSaveFiles";
-const std::string SERVER_STG_URL = "http://10.0.0.106:3000/gbaSaveFiles";
+const std::string SERVER_STG_URL = "http://10.0.0.32:3000/gbaSaveFiles";
 
 void uploadFile(const fs::path& filePath) {
     CURL* curl;
@@ -22,7 +22,7 @@ void uploadFile(const fs::path& filePath) {
         curl_mime_name(field, "file");
         curl_mime_filedata(field, filePath.c_str());
 
-        curl_easy_setopt(curl, CURLOPT_URL, SERVER_URL.c_str());
+        curl_easy_setopt(curl, CURLOPT_URL, SERVER_STG_URL.c_str());
         curl_easy_setopt(curl, CURLOPT_MIMEPOST, form);
         res = curl_easy_perform(curl);
         if(res != CURLE_OK)

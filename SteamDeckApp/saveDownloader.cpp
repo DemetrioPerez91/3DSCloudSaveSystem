@@ -8,7 +8,7 @@
 namespace fs = std::filesystem;
 
 const std::string SERVER_PRO_URL = "http://10.0.0.106:3000/gbaSaveFiles";
-const std::string SERVER_STG_URL = "http://10.0.0.106:3000/gbaSaveFiles";
+const std::string SERVER_STG_URL = "http://10.0.0.32:3000/gbaSaveFiles";
 
 // Helper to store response in a string
 size_t writeToString(void* contents, size_t size, size_t nmemb, std::string* output) {
@@ -42,14 +42,32 @@ std::vector<std::string> extractFilenames(const std::string& json) {
     return filenames;
 }
 
+// Encode file name
+std::string urlEncode(const std::string& value) {
+    std::ostringstream encoded;
+    for (char c : value) {
+        if (isalnum(static_cast<unsigned char>(c)) || c == '-' || c == '_' || c == '.' || c == '~') {
+            encoded << c;
+        } else {
+            encoded << '%' << std::uppercase << std::hex << std::setw(2) << std::setfill('0')
+                    << static_cast<int>(static_cast<unsigned char>(c));
+        }
+    }
+    return encoded.str();
+}
+
 // Download one file
 void downloadFile(const std::string& filename) {
-    std::string fileUrl = SERVER_URL + "/" + filename;
+    std::string encodedFileName = urlEncode(filename);
+    std::string fileUrl = SERVER_STG_URL + "/" + encodedFileName;
+    
     std::ofstream outFile(filename, std::ios::binary);
+    std::cout << "Opening: " << filename << std::endl;
     if (!outFile) {
         std::cerr << "Failed to open file: " << filename << std::endl;
         return;
     }
+
 
     CURL* curl = curl_easy_init();
     if (curl) {
@@ -57,6 +75,8 @@ void downloadFile(const std::string& filename) {
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeToFile);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &outFile);
         CURLcode res = curl_easy_perform(curl);
+        
+      std::cout << "Downloading: " << fileUrl << std::endl;
         if (res != CURLE_OK) {
             std::cerr << "Download failed: " << curl_easy_strerror(res) << std::endl;
         } else {
@@ -74,7 +94,7 @@ int main() {
     std::string jsonResponse;
     CURL* curl = curl_easy_init();
     if (curl) {
-        curl_easy_setopt(curl, CURLOPT_URL, SERVER_URL.c_str());
+        curl_easy_setopt(curl, CURLOPT_URL, SERVER_STG_URL.c_str());
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeToString);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &jsonResponse);
 

@@ -1,6 +1,6 @@
 # 3DS App
 
-This folder holds the code for connencting the 3DS to a local http server and maniuplate the local.sav files.
+This folder holds the code for connecting the 3DS to a local http server and maniuplate the local.sav files.
 
 Pending to work on:
 - Uploading files to HTTP Server

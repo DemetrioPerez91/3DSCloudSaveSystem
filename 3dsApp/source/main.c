@@ -11,6 +11,7 @@
 #include <3ds.h>
 
 
+
 // MARK: DOWNLOAD SECTION
 void downloadAvailableFilesList() 
 {
@@ -19,7 +20,7 @@ void downloadAvailableFilesList()
 
 	// Make json download endpoint
 	char saveFIlesEndPoint[256];
-	snprintf(saveFIlesEndPoint, sizeof(saveFIlesEndPoint), "%s%s", SERVER_STG_URL, SAVEFILES_ENDPOINT);
+	snprintf(saveFIlesEndPoint, sizeof(saveFIlesEndPoint), "%s%s", SERVER_PROD_URL, SAVEFILES_ENDPOINT);
 
 	Result ret = http_download_json(saveFIlesEndPoint);
 	if (ret != 0 ){
@@ -42,7 +43,7 @@ void downloadFileByName(const char *saveFilename)
 	urlEncode(saveFilename, encoded, sizeof(encoded));
 
 	char saveFilesEndPoint[512];
-	snprintf(saveFilesEndPoint, sizeof(saveFilesEndPoint), "%s%s/%s", SERVER_STG_URL, SAVEFILES_ENDPOINT, encoded);
+	snprintf(saveFilesEndPoint, sizeof(saveFilesEndPoint), "%s%s/%s", SERVER_PROD_URL, SAVEFILES_ENDPOINT, encoded);
 
 	printf("FILE URL: %s\n", saveFilesEndPoint);
 	Result ret = http_download(saveFilesEndPoint, saveFilename);
@@ -65,7 +66,8 @@ void downloadFiles() {
 
 void downloadFilesSequence() {
 	ensureSaveFolderExists();
-	downloadAvailableFilesList();
+	// downloadAvailableFilesList();
+	downloadFileByName("Advance Wars 2 - Black Hole Rising (USA, Australia).sav");
 	downloadFiles();
 }
 
@@ -80,11 +82,11 @@ void uploadFileByName(const char *saveFilename)
 	snprintf(filePath, sizeof(filePath), "%s/%s", SAVE_FOLDER, saveFilename);
 
 	char saveFilesEndPoint[512];
-	snprintf(saveFilesEndPoint, sizeof(saveFilesEndPoint), "%s%s", SERVER_STG_URL, SAVEFILES_ENDPOINT);
+	snprintf(saveFilesEndPoint, sizeof(saveFilesEndPoint), "%s%s", SERVER_PROD_URL, SAVEFILES_ENDPOINT);
 
 
 	printf("FILE LOCATION: %s\n", filePath);
-	Result ret = http_upload_file(saveFilesEndPoint, filePath);
+	Result ret = httpUploadFile(saveFilesEndPoint, filePath);
 	if (ret != 0 ){
 		printf("File upload failed\n");
 	} else {
@@ -95,29 +97,67 @@ void uploadFileByName(const char *saveFilename)
 }
 
 
-int main()
-{
-	gfxInitDefault();
+// int main()
+// {
+// 	gfxInitDefault();
 
-	consoleInit(GFX_BOTTOM,NULL);
+// 	consoleInit(GFX_BOTTOM,NULL);
 
-	// downloadFilesSequence();
 	
-	uploadFileByName("test.txt");
+	
+	
 
-	// Main loop
-	while (aptMainLoop())
-	{
-		gspWaitForVBlank();
-		hidScanInput();
-		// Your code goes here
+// 	// Main loop
+// 	while (aptMainLoop())
+// 	{
+// 		gspWaitForVBlank();
+// 		hidScanInput();
+// 		// Your code goes here
 
-		u32 kDown = hidKeysDown();
-		if (kDown & KEY_START)
-			break; // break in order to return to hbmenu
+// 		u32 kDown = hidKeysDown();
+// 		if (kDown & KEY_START)
+// 			break; // break in order to return to hbmenu
 
-	}
+// 	}
 
-	gfxExit();
-	return 0;
+
+// 	gfxExit();
+// 	return 0;
+// }
+
+int main() {
+    gfxInitDefault();
+    consoleInit(GFX_BOTTOM, NULL);
+
+    printf("Press UP to upload files\n");
+    printf("Press DOWN to download files\n");
+    printf("Press START to exit\n");
+
+    while (aptMainLoop())
+    {
+        gspWaitForVBlank();
+        hidScanInput();
+
+        u32 kDown = hidKeysDown();
+
+        if (kDown & KEY_START)
+            break;
+
+        if (kDown & KEY_DUP) {
+            printf("Uploading files...\n");
+            uploadFileByName("Advance Wars 2 - Black Hole Rising (USA, Australia).sav");
+            printf("Upload complete.\n");
+			printf("ALL DONE HERE, puch startt to exit");
+        }
+
+        if (kDown & KEY_DDOWN) {
+            printf("Downloading files...\n");
+            downloadFilesSequence();
+            printf("Download complete.\n");
+
+        }
+    }
+
+    gfxExit();
+    return 0;
 }

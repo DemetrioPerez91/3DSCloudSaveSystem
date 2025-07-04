@@ -3,11 +3,15 @@
 #include <stdio.h>
 #include <inttypes.h>
 #include "includes/config.h"
+#include "includes/savefile.h"
 #include "includes/fileops.h"
-#include "includes/network.h"
+#include "includes/upload.h"
 #include "includes/encoding.h"
+#include "includes/download.h"
 #include <3ds.h>
 
+
+// MARK: DOWNLOAD SECTION
 void downloadAvailableFilesList() 
 {
 	// Initialize HTTP
@@ -59,7 +63,14 @@ void downloadFiles() {
     }
 }
 
+void downloadFilesSequence() {
+	ensureSaveFolderExists();
+	downloadAvailableFilesList();
+	downloadFiles();
+}
 
+
+// MARK: UPLAOD FILE SECTION
 void uploadFileByName(const char *saveFilename) 
 {
 	// Initialize HTTP
@@ -83,19 +94,15 @@ void uploadFileByName(const char *saveFilename)
 	httpcExit();
 }
 
+
 int main()
 {
 	gfxInitDefault();
 
 	consoleInit(GFX_BOTTOM,NULL);
 
-	// ensureSaveFolderExists();
-	// writeHelloFile();
-
-	// downloadAvailableFilesList();
-
-	// downloadFiles();
-
+	// downloadFilesSequence();
+	
 	uploadFileByName("test.txt");
 
 	// Main loop

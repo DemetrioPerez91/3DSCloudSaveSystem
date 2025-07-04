@@ -58,8 +58,9 @@ std::string urlEncode(const std::string& value) {
 
 // Download one file
 void downloadFile(const std::string& filename) {
+    std::cout << "Downloading From  " << SERVER_PRO_URL << std::endl; 
     std::string encodedFileName = urlEncode(filename);
-    std::string fileUrl = SERVER_STG_URL + "/" + encodedFileName;
+    std::string fileUrl = SERVER_PRO_URL + "/" + encodedFileName;
     
     std::ofstream outFile(filename, std::ios::binary);
     std::cout << "Opening: " << filename << std::endl;
@@ -94,7 +95,7 @@ int main() {
     std::string jsonResponse;
     CURL* curl = curl_easy_init();
     if (curl) {
-        curl_easy_setopt(curl, CURLOPT_URL, SERVER_STG_URL.c_str());
+        curl_easy_setopt(curl, CURLOPT_URL, SERVER_PRO_URL.c_str());
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeToString);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &jsonResponse);
 

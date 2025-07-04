@@ -16,13 +16,15 @@ void uploadFile(const fs::path& filePath) {
 
     curl_global_init(CURL_GLOBAL_ALL);
     curl = curl_easy_init();
+    
+    std::cout << "Uploading to  " << SERVER_PRO_URL << std::endl; 
     if(curl) {
         form = curl_mime_init(curl);
         field = curl_mime_addpart(form);
         curl_mime_name(field, "file");
         curl_mime_filedata(field, filePath.c_str());
 
-        curl_easy_setopt(curl, CURLOPT_URL, SERVER_STG_URL.c_str());
+        curl_easy_setopt(curl, CURLOPT_URL, SERVER_PRO_URL.c_str());
         curl_easy_setopt(curl, CURLOPT_MIMEPOST, form);
         res = curl_easy_perform(curl);
         if(res != CURLE_OK)
